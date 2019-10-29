@@ -1,11 +1,7 @@
 package spos.lab1;
 
-import com.sun.org.apache.xpath.internal.functions.FuncGenerateId;
-import spos.lab1.demo.DoubleOps;
 
-import spos.lab1.demo.*;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.channels.Pipe;
 import java.util.Scanner;
 
