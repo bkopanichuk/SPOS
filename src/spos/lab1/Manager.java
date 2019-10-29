@@ -8,7 +8,11 @@ public class Manager {
         Scanner in = new Scanner(System.in);
         System.out.println("Enter x");
         int x = in.nextInt();
-//        DoubleOps.funcF(x);
-//        DoubleOps.funcG(x);
+        try {
+            DoubleOps.funcG(x);
+            DoubleOps.funcF(x);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
