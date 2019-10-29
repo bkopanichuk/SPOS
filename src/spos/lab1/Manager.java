@@ -9,6 +9,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Pipe;
 import java.util.Scanner;
 
+import static spos.lab1.Pipe.ReceivePipe;
+import static spos.lab1.Pipe.SendPipe;
+
 public class Manager {
     public static void main(String[] args){
         Manager manager = new Manager();
@@ -19,64 +22,44 @@ public class Manager {
         Scanner in = new Scanner(System.in);
         System.out.println("Enter x");
         int x = in.nextInt();
-        Pipe pipe1 = SendPipe(x);
-        Pipe pipe2 = SendPipe(x);
+
+        Pipe pipe1 = null;
+        Pipe pipe2 = null;
+        try {
+            pipe1 = Pipe.open();
+            pipe2 = Pipe.open();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        SendPipe(x, pipe1);
+        SendPipe(x, pipe2);
+
+        funcGThread dltask1 = new funcGThread(pipe1);
+        Thread GTread = new Thread(dltask1);
+        GTread.start();
 
         funcFThread dltask2 = new funcFThread(pipe2);
         Thread FTread = new Thread(dltask2);
         FTread.start();
 
-        funcGThread dltask1 = new funcGThread(pipe1);
-        Thread GTread = new Thread(dltask1);
-        GTread.start();
+        Print(FTread, GTread, pipe1, pipe2);
     }
 
-    public static <T> Pipe SendPipe(T x) {
-        Pipe pipe = null;
-        try {
-            pipe = Pipe.open();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void Print(Thread FTread, Thread GTread, Pipe pipe1, Pipe pipe2){
 
-        Pipe.SinkChannel sinkChannel = pipe.sink();
+        boolean flag1 = false;
+        boolean flag2 = false;
 
-        ByteBuffer buf = ByteBuffer.allocate(255);
-        buf.clear();
-        String y = new String(String.valueOf(x));
-        buf.put(y.getBytes());
-
-        buf.flip();
-
-        while(buf.hasRemaining()) {
-            try {
-                sinkChannel.write(buf);
-            } catch (IOException e) {
-                e.printStackTrace();
+        while (flag1 == false || flag2 == false) {
+            if (!GTread.isAlive() && flag1 == false){
+                System.out.println("funcG: " + ReceivePipe(pipe1));
+                flag1 = true;
+            }
+            if (!FTread.isAlive() && flag2 == false){
+                System.out.println("funcF: " + ReceivePipe(pipe2));
+                flag2 = true;
             }
         }
-        return pipe;
-    }
-
-    public static String ReceivePipe(Pipe pipe){
-        Pipe.SourceChannel sourceChannel = pipe.source();
-        ByteBuffer buf = ByteBuffer.allocate(255);
-        String res = "";
-        try {
-            while(sourceChannel.read(buf) > 0){
-                //limit is set to current position and position is set to zero
-                buf.flip();
-                while(buf.hasRemaining()){
-                    char ch = (char) buf.get();
-                    res = res + String.valueOf(ch);
-                }
-                //position is set to zero and limit is set to capacity to clear the buffer.
-                buf.clear();
-                return res;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return res;
     }
 }
