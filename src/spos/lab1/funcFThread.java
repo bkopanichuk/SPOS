@@ -1,13 +1,13 @@
 package spos.lab1;
 
-import spos.lab1.demo.*;
+import spos.lab1.demo.DoubleOps;
 
 import java.nio.channels.Pipe;
 
-public class funcGThread implements Runnable{
+public class funcFThread implements Runnable{
     Pipe pipe;
 
-    public funcGThread(Pipe pipe){
+    public funcFThread(Pipe pipe){
         this.pipe = pipe;
     }
 
@@ -21,9 +21,10 @@ public class funcGThread implements Runnable{
         int x = Integer.parseInt(res);
 
         try {
-            System.out.println(DoubleOps.funcG(x));
+            System.out.println(DoubleOps.funcF(x));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 }
+
