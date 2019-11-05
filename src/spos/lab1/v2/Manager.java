@@ -1,4 +1,4 @@
-package spos.lab1;
+package spos.lab1.v2;
 
 
 import java.io.IOException;
@@ -7,8 +7,8 @@ import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static spos.lab1.Pipe.ReceivePipe;
-import static spos.lab1.Pipe.SendPipe;
+import static spos.lab1.v1.Pipe.ReceivePipe;
+import static spos.lab1.v1.Pipe.SendPipe;
 
 public class Manager {
     static Thread GTread;

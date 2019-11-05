@@ -1,4 +1,4 @@
-package spos.lab1;
+package spos.lab1.v1;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
