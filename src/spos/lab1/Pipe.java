@@ -24,7 +24,7 @@ public class Pipe {
         return pipe;
     }
 
-    public synchronized static String ReceivePipe(java.nio.channels.Pipe pipe){
+    public static String ReceivePipe(java.nio.channels.Pipe pipe){
         java.nio.channels.Pipe.SourceChannel sourceChannel = pipe.source();
         ByteBuffer buf = ByteBuffer.allocate(255);
         String res = "";
