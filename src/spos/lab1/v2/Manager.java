@@ -1,12 +1,20 @@
 package spos.lab1.v2;
 
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
+import org.jnativehook.keyboard.NativeKeyEvent;
+import org.jnativehook.keyboard.NativeKeyListener;
 
 import java.io.IOException;
 import java.nio.channels.Pipe;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import static org.jnativehook.GlobalScreen.unregisterNativeHook;
 import static spos.lab1.v1.Pipe.ReceivePipe;
 import static spos.lab1.v1.Pipe.SendPipe;
 
@@ -50,7 +58,8 @@ public class Manager {
         FTread = new Thread(dltask2);
         FTread.start();
 
-        startTimer(0);
+        KeyListener EcapseKeyListener = new KeyListener();
+        EcapseKeyListener.Start();
 
         getResult(FTread, GTread, pipe1, pipe2);
     }
@@ -87,57 +96,23 @@ public class Manager {
         }
     }
 
-    public void periodicprompt() {
-        stopTimer();
-        flagPrompt = true;
-        System.out.println("Choose:\n1 - continue computation\n2 - continue computation without prompt\n3 - cancel computation");
-        Scanner in = new Scanner(System.in);
-        int x = in.nextInt();
-        switch (x){
-            case 1:
-                continueCase();
-                startTimer(5000);
-                flagPrompt = false;
-                break;
-            case 2:
-                continueCase();
-                flagPrompt = false;
-                break;
-            case 3:
-                cancelCase();
-                System.exit(0);
-                break;
-        }
-    }
-
     public void cancelCase() {
         if (res_f == "" && res_g == "") {
             System.out.println("Answer is undefind because f and g hasn't been counted");
+            System.exit(0);
         } else if (res_f == "" && res_g != "") {
             checkShortCircuitFuncG();
             printResFuncG();
             System.out.println("Answer is undefind because f hasn't been counted");
+            System.exit(0);
         } else if (res_f != "" && res_g == "") {
             checkShortCircuitFuncF();
             printResFuncF();
             System.out.println("Answer is undefind because g hasn't been counted");
+            System.exit(0);
         } else if (res_f != "" && res_g != "") {
             printResFuncG();
             printResFuncF();
-            System.out.println("Answer: " + String.valueOf(Double.valueOf(res_g) * Double.valueOf(res_f)));
-        }
-    }
-
-    public void continueCase(){
-        if (res_g != ""){
-            checkShortCircuitFuncG();
-            printResFuncG();
-        }
-        if (res_f != "") {
-            checkShortCircuitFuncF();
-            printResFuncF();
-        }
-        if (res_f != "" && res_g != "") {
             System.out.println("Answer: " + String.valueOf(Double.valueOf(res_g) * Double.valueOf(res_f)));
             System.exit(0);
         }
@@ -173,17 +148,43 @@ public class Manager {
         }
     }
 
-    public void startTimer(int delay) {
-        promptTimer = new Timer();
-        promptTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                periodicprompt();
+    public class KeyListener implements NativeKeyListener {
+        public void nativeKeyPressed(NativeKeyEvent e) {
+            if (NativeKeyEvent.getKeyText(e.getKeyCode()) == "Escape"){
+                cancelCase();
             }
-        }, delay);
-    }
 
-    public void stopTimer() {
-        promptTimer.cancel();
+            if (e.getKeyCode() == NativeKeyEvent.VC_ESCAPE) {
+                try {
+                    unregisterNativeHook();
+                } catch (NativeHookException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        public void nativeKeyReleased(NativeKeyEvent e) {
+        }
+
+        public void nativeKeyTyped(NativeKeyEvent e) {
+        }
+
+        public void Start() {
+            Handler[] handlers = Logger.getLogger("").getHandlers();
+            for (int i = 0; i < handlers.length; i++) {
+                handlers[i].setLevel(Level.OFF);
+            }
+            try {
+                GlobalScreen.registerNativeHook();
+            }
+            catch (NativeHookException ex) {
+                System.err.println("There was a problem registering the native hook.");
+                System.err.println(ex.getMessage());
+
+                System.exit(1);
+            }
+
+            GlobalScreen.addNativeKeyListener(new KeyListener());
+        }
     }
 }
