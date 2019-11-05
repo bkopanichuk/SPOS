@@ -52,25 +52,36 @@ public class Manager {
                 PeriodicPrompt prompt = new PeriodicPrompt();
                 prompt.periodicprompt();
             }
-        }, 0, 10000);
+        }, 10000, 10000);
 
-        Print(FTread, GTread, pipe1, pipe2);
+        getResult(FTread, GTread, pipe1, pipe2);
     }
 
-    public void Print(Thread FTread, Thread GTread, Pipe pipe1, Pipe pipe2){
+    public void getResult(Thread FTread, Thread GTread, Pipe pipe1, Pipe pipe2){
+        String res_g = "";
+        String res_f = "";
 
-        boolean flag1 = false;
-        boolean flag2 = false;
-
-        while (flag1 == false || flag2 == false) {
-            if (!GTread.isAlive() && flag1 == false && flagPrompt == false){
-                System.out.println("funcG: " + ReceivePipe(pipe1));
-                flag1 = true;
+        while (res_g.length() == 0 || res_f.length() == 0) {
+            if (!GTread.isAlive() && res_g.length() == 0 && flagPrompt == false){
+                res_g += ReceivePipe(pipe1);
+                if (res_g == "0.0"){
+                    System.out.println("funcG: " + res_g);
+                    System.exit(0);
+                }
+                System.out.println("funcG: " + res_g);
             }
-            if (!FTread.isAlive() && flag2 == false && flagPrompt == false){
-                System.out.println("funcF: " + ReceivePipe(pipe2));
-                flag2 = true;
+            if (!FTread.isAlive() && res_f.length() == 0 && flagPrompt == false){
+                res_f += ReceivePipe(pipe2);
+                if (res_f == "0.0"){
+                    System.out.println("funcF: " + res_g);
+                    System.exit(0);
+                }
+                System.out.println("funcF: " + res_f);
             }
         }
+
+        System.out.println("Answer: " + String.valueOf(Double.valueOf(res_g) * Double.valueOf(res_f)));
+
+        System.exit(0);
     }
 }
