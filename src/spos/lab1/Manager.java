@@ -13,7 +13,7 @@ import static spos.lab1.Pipe.SendPipe;
 public class Manager {
     static Thread GTread;
     static Thread FTread;
-    static boolean flagPrompt = false;
+    private boolean flagPrompt = false;
 
     public static void main(String[] args){
         Manager manager = new Manager();
@@ -49,10 +49,9 @@ public class Manager {
         t.schedule(new TimerTask() {
             @Override
             public void run() {
-                PeriodicPrompt prompt = new PeriodicPrompt();
-                prompt.periodicprompt();
+                periodicprompt();
             }
-        }, 10000, 10000);
+        }, 0, 10000);
 
         getResult(FTread, GTread, pipe1, pipe2);
     }
@@ -84,5 +83,24 @@ public class Manager {
         System.out.println("Answer: " + String.valueOf(Double.valueOf(res_g) * Double.valueOf(res_f)));
 
         System.exit(0);
+    }
+
+    public void periodicprompt() {
+        flagPrompt = true;
+        System.out.println("Choose:\n1 - continue\n2 - continue without prompt\n3 - cancel");
+        Scanner in = new Scanner(System.in);
+        int x = in.nextInt();
+        switch (x){
+            case 1:
+                flagPrompt = false;
+                break;
+            case 2:
+                flagPrompt = false;
+                break;
+            case 3:
+                flagPrompt = false;
+                System.exit(0);
+                break;
+        }
     }
 }
