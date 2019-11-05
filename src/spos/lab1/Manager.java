@@ -27,7 +27,7 @@ public class Manager {
 
     public void start(){
         Scanner in = new Scanner(System.in);
-        System.out.println("Enter x");
+        System.out.println("Enter function`s argument x: ");
         int x = in.nextInt();
 
         Pipe pipe1 = null;
@@ -60,7 +60,7 @@ public class Manager {
             if (!GTread.isAlive() && res_g.length() == 0){
                 res_g += ReceivePipe(pipe1);
                 if (flagPrompt == false && flagFuncG == false) {
-                    System.out.println("funcG: " + res_g);
+                    printResFuncG();
                     flagFuncG = true;
                 }
                 if (Double.valueOf(res_g) == 0.0 && flagPrompt == false){
@@ -71,7 +71,7 @@ public class Manager {
             if (!FTread.isAlive() && res_f.length() == 0){
                 res_f += ReceivePipe(pipe2);
                 if (flagPrompt == false && flagFuncF == false) {
-                    System.out.println("funcF: " + res_f);
+                    printResFuncF();
                     flagFuncF = true;
                 }
                 if (Double.valueOf(res_f) == 0.0 && flagPrompt == false){
@@ -114,54 +114,62 @@ public class Manager {
         if (res_f == "" && res_g == "") {
             System.out.println("Answer is undefind because f and g hasn't been counted");
         } else if (res_f == "" && res_g != "") {
-            if (Double.valueOf(res_g) == 0.0){
-                System.out.println("funcG: " + res_g);
-                System.out.println("Answer: " + res_g);
-                System.exit(0);
-            }
-            System.out.println("funcG: " + res_g);
+            checkShortCircuitFuncG();
+            printResFuncG();
             System.out.println("Answer is undefind because f hasn't been counted");
         } else if (res_f != "" && res_g == "") {
-            if (Double.valueOf(res_f) == 0.0){
-                System.out.println("funcF: " + res_f);
-                System.out.println("Answer: " + res_f);
-                System.exit(0);
-            }
-            System.out.println("funcF: " + res_f);
+            checkShortCircuitFuncF();
+            printResFuncF();
             System.out.println("Answer is undefind because g hasn't been counted");
         } else if (res_f != "" && res_g != "") {
-            System.out.println("funcG: " + res_g);
-            System.out.println("funcF: " + res_f);
+            printResFuncG();
+            printResFuncF();
             System.out.println("Answer: " + String.valueOf(Double.valueOf(res_g) * Double.valueOf(res_f)));
         }
     }
 
     public void continueCase(){
         if (res_g != ""){
-            if (Double.valueOf(res_g) == 0.0){
-                System.out.println("funcG: " + res_g);
-                System.out.println("Answer: " + res_g);
-                System.exit(0);
-            }
-            if (flagFuncG == false) {
-                System.out.println("funcG: " + res_g);
-                flagFuncG = true;
-            }
+            checkShortCircuitFuncG();
+            printResFuncG();
         }
         if (res_f != "") {
-            if (Double.valueOf(res_f) == 0.0){
-                System.out.println("funcF: " + res_f);
-                System.out.println("Answer: " + res_f);
-                System.exit(0);
-            }
-            if (flagFuncF == false) {
-                System.out.println("funcF: " + res_f);
-                flagFuncF = true;
-            }
+            checkShortCircuitFuncF();
+            printResFuncF();
         }
         if (res_f != "" && res_g != "") {
             System.out.println("Answer: " + String.valueOf(Double.valueOf(res_g) * Double.valueOf(res_f)));
             System.exit(0);
+        }
+    }
+
+    public void checkShortCircuitFuncG(){
+        if (Double.valueOf(res_g) == 0.0){
+            printResFuncG();
+            System.out.println("Answer: " + res_g);
+            System.exit(0);
+        }
+    }
+
+    public void checkShortCircuitFuncF(){
+        if (Double.valueOf(res_f) == 0.0){
+            System.out.println("funcF: " + res_f);
+            System.out.println("Answer: " + res_f);
+            System.exit(0);
+        }
+    }
+
+    public void printResFuncG(){
+        if (flagFuncG == false) {
+            System.out.println("funcG: " + res_g);
+            flagFuncG = true;
+        }
+    }
+
+    public void printResFuncF(){
+        if (flagFuncF == false) {
+            System.out.println("funcF: " + res_f);
+            flagFuncF = true;
         }
     }
 
