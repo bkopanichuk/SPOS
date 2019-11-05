@@ -64,19 +64,20 @@ public class Manager {
         while (res_g.length() == 0 || res_f.length() == 0) {
             if (!GTread.isAlive() && res_g.length() == 0 && flagPrompt == false){
                 res_g += ReceivePipe(pipe1);
-                if (res_g == "0.0"){
-                    System.out.println("funcG: " + res_g);
+                System.out.println("funcG: " + res_g);
+                if (Double.valueOf(res_g) == 0.0){
+                    System.out.println("Answer: " + res_g);
                     System.exit(0);
                 }
-                System.out.println("funcG: " + res_g);
             }
             if (!FTread.isAlive() && res_f.length() == 0 && flagPrompt == false){
                 res_f += ReceivePipe(pipe2);
-                if (res_f == "0.0"){
-                    System.out.println("funcF: " + res_g);
+                System.out.println("funcF: " + res_f);
+
+                if (Double.valueOf(res_f) == 0.0){
+                    System.out.println("Answer: " + res_f);
                     System.exit(0);
                 }
-                System.out.println("funcF: " + res_f);
             }
         }
 
