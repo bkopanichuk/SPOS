@@ -2,10 +2,19 @@ package spos.lab1.v2;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 
 public class Pipe {
     public static <T> java.nio.channels.Pipe SendPipe(T x, java.nio.channels.Pipe pipe) {
         java.nio.channels.Pipe.SinkChannel sinkChannel = pipe.sink();
+
+        try {
+            sinkChannel.configureBlocking(false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         ByteBuffer buf = ByteBuffer.allocate(255);
         buf.clear();
@@ -14,7 +23,7 @@ public class Pipe {
 
         buf.flip();
 
-        while(buf.hasRemaining()) {
+        while (buf.hasRemaining()) {
             try {
                 sinkChannel.write(buf);
             } catch (IOException e) {
@@ -26,6 +35,13 @@ public class Pipe {
 
     public static String ReceivePipe(java.nio.channels.Pipe pipe){
         java.nio.channels.Pipe.SourceChannel sourceChannel = pipe.source();
+
+        try {
+            sourceChannel.configureBlocking(false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         ByteBuffer buf = ByteBuffer.allocate(255);
         String res = "";
         try {

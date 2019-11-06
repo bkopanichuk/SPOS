@@ -65,26 +65,31 @@ public class Manager {
     }
 
     public void getResult(Thread FTread, Thread GTread, Pipe pipe1, Pipe pipe2){
-        while (res_g.length() == 0 || res_f.length() == 0) {
-            res_g = ReceivePipe(pipe1);
-            if (res_g != ""){
+        String FuncFbuffer = "";
+        String FuncGbuffer = "";
+
+        while (flagFuncF == false || flagFuncG == false) {
+            FuncGbuffer = ReceivePipe(pipe1);
+            if (FuncGbuffer != ""){
+                res_g = FuncGbuffer;
                 if (flagPrompt == false && flagFuncG == false) {
                     printResFuncG();
                     flagFuncG = true;
                 }
-                if (Double.valueOf(res_g) == 0.0 && flagPrompt == false){
-                    System.out.println("Answer: " + res_g);
+                if (Double.valueOf(FuncGbuffer) == 0.0 && flagPrompt == false){
+                    System.out.println("Answer: " + FuncGbuffer);
                     System.exit(0);
                 }
             }
-            res_f = ReceivePipe(pipe2);
-            if (res_f != ""){
+            FuncFbuffer = ReceivePipe(pipe2);
+            if (FuncFbuffer != ""){
+                res_f = FuncFbuffer;
                 if (flagPrompt == false && flagFuncF == false) {
                     printResFuncF();
                     flagFuncF = true;
                 }
-                if (Double.valueOf(res_f) == 0.0 && flagPrompt == false){
-                    System.out.println("Answer: " + res_f);
+                if (Double.valueOf(FuncFbuffer) == 0.0 && flagPrompt == false){
+                    System.out.println("Answer: " + FuncFbuffer);
                     System.exit(0);
                 }
             }
