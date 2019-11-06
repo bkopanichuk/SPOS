@@ -50,7 +50,7 @@ public class Manager {
         FTread = new Thread(dltask2);
         FTread.start();
 
-        startTimer(0);
+        startTimer(4000);
 
         getResult(FTread, GTread, pipe1, pipe2);
     }

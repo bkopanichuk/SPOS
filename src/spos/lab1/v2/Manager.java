@@ -66,8 +66,8 @@ public class Manager {
 
     public void getResult(Thread FTread, Thread GTread, Pipe pipe1, Pipe pipe2){
         while (res_g.length() == 0 || res_f.length() == 0) {
-            if (!GTread.isAlive() && res_g.length() == 0){
-                res_g += ReceivePipe(pipe1);
+            res_g = ReceivePipe(pipe1);
+            if (res_g != ""){
                 if (flagPrompt == false && flagFuncG == false) {
                     printResFuncG();
                     flagFuncG = true;
@@ -77,8 +77,8 @@ public class Manager {
                     System.exit(0);
                 }
             }
-            if (!FTread.isAlive() && res_f.length() == 0){
-                res_f += ReceivePipe(pipe2);
+            res_f = ReceivePipe(pipe2);
+            if (res_f != ""){
                 if (flagPrompt == false && flagFuncF == false) {
                     printResFuncF();
                     flagFuncF = true;
